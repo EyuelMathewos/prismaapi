@@ -2,13 +2,14 @@
 
  
 
-## User CRUD OPERATIONS   
+## User Model   
    CREATE USER [http://localhost:3000/users] <br/>
    GET ALL USER [http://localhost:3000/users] <br/>
    POST USER [http://localhost:3000/users] <br/>
    DELETE USER BY ID [http://localhost:3000/users/] + ID OF USER<br/>
    GET USER BY ID [http://localhost:3000/users/] + ID OF USER<br/>
    PUT USER BY ID [http://localhost:3000/users/] + ID OF USER<br/>
+## Accesstoken Model
    GET ACCESSTOKENS BY USER ID [http://localhost:3000/:id/accesstokens]
    GET ACCESSTOKENS & USER ID [http://localhost:3000/:id/accesstokens/:tokenid]
    
