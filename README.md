@@ -10,7 +10,7 @@
    GET USER BY ID [http://localhost:3000/users/] + ID OF USER<br/>
    PUT USER BY ID [http://localhost:3000/users/] + ID OF USER<br/>
 ## Accesstoken Model
-   GET ACCESSTOKENS BY USER ID [http://localhost:3000/:id/accesstokens]
+   GET ACCESSTOKENS BY USER ID [http://localhost:3000/:id/accesstokens]<br/>
    GET ACCESSTOKENS & USER ID [http://localhost:3000/:id/accesstokens/:tokenid]
    
 ## Item model
