@@ -7,7 +7,6 @@ var { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
 
-
 router.route("/")
 .get( async (req:Request, res:Response) => {
   
