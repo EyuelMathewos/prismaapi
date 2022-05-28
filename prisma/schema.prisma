@@ -29,10 +29,10 @@ model accessTokens {
 }
 
 model Item {
-  id           Int         @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   itemname         String
-  itemprice        Float
-  item Order   @relation(fields: [id], references: [itemId])
+  itemprice        Int
+  order Order[]
 }
 
 model Order {
@@ -41,5 +41,5 @@ model Order {
     itemAmount   Int
     customerId   Int 
     orders User   @relation(fields: [customerId], references: [id])
-    item Item?
+    item Item   @relation(fields: [itemId], references: [id])
 }

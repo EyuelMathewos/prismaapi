@@ -24,7 +24,7 @@ CREATE TABLE `accessTokens` (
 CREATE TABLE `Item` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `itemname` VARCHAR(191) NOT NULL,
-    `itemprice` DOUBLE NOT NULL,
+    `itemprice` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -44,7 +44,7 @@ CREATE TABLE `Order` (
 ALTER TABLE `accessTokens` ADD CONSTRAINT `accessTokens_clientId_fkey` FOREIGN KEY (`clientId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Item` ADD CONSTRAINT `Item_id_fkey` FOREIGN KEY (`id`) REFERENCES `Order`(`itemId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Order` ADD CONSTRAINT `Order_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Order` ADD CONSTRAINT `Order_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Order` ADD CONSTRAINT `Order_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Item`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

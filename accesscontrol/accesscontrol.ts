@@ -1,17 +1,63 @@
-// import { User, accessTokens, Prisma } from '@prisma/client';
-// import { AbilityClass, AbilityBuilder, subject } from '@casl/ability';
-// import { PrismaAbility, Model } from '@casl/prisma';
+import { AbilityBuilder, Ability, ForbiddenError  } from '@casl/ability'
 
-// type AppAbility = PrismaAbility<[string, Models<{
-//   User: User,
-//   accessTokens: accessTokens
-// }>]>;
-// const AppAbility = PrismaAbility as AbilityClass<AppAbility>;
-// const { can, cannot, build } = new AbilityBuilder(AppAbility);
+import { User, accessTokens, Prisma } from '@prisma/client';
 
-// can('read', 'Post', { authorId: 1 });
-// cannot('read', 'Post', { title: { startsWith: '[WIP]:' } });
+//ForbiddenError.setDefaultMessage(() => "Default error message");
 
-// const ability = build();
-// ability.can('read', 'Post');
-// ability.can('read', subject('Post', { title: '...', authorId: 1 })));
+ export function defineAbilitiesFor(user: number) {
+  const { can, cannot, rules } = new AbilityBuilder(Ability);
+
+//Admin
+if(user==1){
+  can('read', 'User');
+  can('create', 'User');
+  can('update', 'User');
+  cannot('delete', 'User');
+
+  can('read', 'Item');
+  can('create', 'Item');
+  can('update', 'Item');
+  cannot('delete', 'Item');
+
+  can('read', 'Order');
+  can('create', 'Order');
+  can('update', 'Order');
+  cannot('delete', 'Order');
+}
+//customer
+if(user==2){
+  can('read', 'User');
+  can('create', 'User');
+  can('update', 'User');
+
+
+  can('read', 'Item');
+
+
+  can('read', 'Order');
+  can('create', 'Order');
+  can('update', 'Order');
+}
+//Organization
+if(user==3){
+  can('read', 'User');
+  can('create', 'User');
+  can('update', 'User');
+
+
+  can('read', 'Item');
+  can('create', 'Item');
+  can('update', 'Item');
+
+  can('read', 'Order');
+}
+//Unauthenticated
+else {
+  can('create', 'User');
+  can('read', 'Item');
+}
+let ability = new Ability(rules)
+
+
+  return ability;
+};
