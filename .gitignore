@@ -9,6 +9,9 @@
 # production
 /build
 
+#migrations
+/migrations
+
 # misc
 .env
 .DS_Store

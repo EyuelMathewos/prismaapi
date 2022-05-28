@@ -14,6 +14,11 @@ if(user==1){
   can('update', 'User');
   cannot('delete', 'User');
 
+  can('read', 'accessTokens');
+  can('create', 'accessTokens');
+  can('update', 'accessTokens');
+  cannot('delete', 'accessTokens');
+
   can('read', 'Item');
   can('create', 'Item');
   can('update', 'Item');
@@ -23,12 +28,19 @@ if(user==1){
   can('create', 'Order');
   can('update', 'Order');
   cannot('delete', 'Order');
+
+
 }
 //customer
 if(user==2){
   can('read', 'User');
   can('create', 'User');
   can('update', 'User');
+
+  can('read', 'accessTokens');
+  can('create', 'accessTokens');
+  can('update', 'accessTokens');
+  cannot('delete', 'accessTokens');
 
 
   can('read', 'Item');
@@ -43,6 +55,11 @@ if(user==3){
   can('read', 'User');
   can('create', 'User');
   can('update', 'User');
+
+  can('read', 'accessTokens');
+  can('create', 'accessTokens');
+  can('update', 'accessTokens');
+  cannot('delete', 'accessTokens');
 
 
   can('read', 'Item');
