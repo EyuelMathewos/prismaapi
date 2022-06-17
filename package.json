@@ -6,9 +6,14 @@
   "scripts": {
     "start": "nodemon ./index.ts",
     "upstart": "ts-node ./index.ts",
+    "build":"tsc",
     "seed": "ts-node ./seed/seed.ts",
     "test": "jest",
-    "testwatch": "jest --watch"
+    "testwatch": "jest --watch",
+    "prisma:generate": "prisma generate",
+    "migrate:create": "prisma migrate dev --init",
+    "migrate:up": "prisma migrate --experimental up --auto-approve --create-db",
+    "migrate:dev": "prisma migrate dev"
   },
   "author": "",
   "license": "ISC",
