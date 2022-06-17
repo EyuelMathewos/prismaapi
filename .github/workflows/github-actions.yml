@@ -33,8 +33,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       # run the migration in the test database
-      - run: migrate:up
-#       - run: npm run test
+#       - run: migrate:up
+      - run: npm run test
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' # Only deploy master
