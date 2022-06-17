@@ -43,6 +43,7 @@ jobs:
       - uses: actions/checkout@v2
       # - name: Run production migration
       # Note: disabled migrate deploy in favour of using the Procfile release phase
+      - run: npm install
       - run: npm run migrate:create
       #   env:
       #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
