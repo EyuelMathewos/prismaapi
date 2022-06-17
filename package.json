@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./app.ts",
-    "upstart": "ts-node ./app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./index.ts",
+    "upstart": "ts-node ./index.ts",
+    "seed": "ts-node ./seed/seed.ts",
+    "test": "jest",
+    "testwatch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/auth0": "^2.35.0",
+    "@types/jest": "^28.1.1",
     "@types/node": "^17.0.34",
+    "@types/supertest": "^2.0.12",
     "prisma": "^3.14.0",
+    "supertest": "^6.2.3",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
@@ -23,14 +29,16 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
+    "auth0": "^2.42.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.18.1",
     "express-jwt": "^7.7.5",
     "express-openid-connect": "^2.7.2",
-    "jade": "^1.11.0",
+    "jade": "^1.9.2",
+    "jest": "^28.1.1",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^2.1.4",
     "nodemon": "^2.0.16",
+    "ts-jest": "^28.0.5",
     "validatorjs": "^3.22.1"
   }
 }

@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,11 +16,11 @@ model User {
   name         String?
   password     String
   role         Int
-  tokens accessTokens[]
+  tokens accesstokens[]
   orders Order[]
 }
 
-model accessTokens {
+model accesstokens {
   id          Int @id @default(autoincrement())
   clientId    Int 
   iat         Int

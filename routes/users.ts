@@ -1,38 +1,42 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { validator } from "../validator/index";
-import { validationRule, loginValidation } from "../validator/userValidation";
-const { requiresAuth } = require('express-openid-connect');
-const jwt = require('jsonwebtoken');
-
+import { validationRule,loginValidation } from "../validator/userValidation";
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const { ForbiddenError } = require('@casl/ability');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
+const auth = require("../service/auth")
 
 interface CustomRequest extends Request {
-  oidc ?: any
+  ability ? : any
 }
 
 router.route("/")
-
-  .get( requiresAuth(),async (req: CustomRequest, res: Response, ) => {
-    const options = { fieldsFrom: (rule: { fields: any; }) => rule.fields };
-      const users = await prisma.user.findMany({
-
-
-      }).catch((error: string) => {
+  .get(async (req: CustomRequest, res: Response) => {
+    if (req.ability.can('read', 'User')) {
+      const users = await prisma.user.findMany({}).catch((error: string) => {
         res.send(error);
       })
       res.json(users);
-   
-
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 
   .post(async (req: CustomRequest, res: Response) => {
-
+    if (req.ability.can('create', 'User')) {
       req.body.role = parseInt(req.body.role)
-      validator(req.body, validationRule, {}, (err, status) => {
+      validator(req.body, validationRule, {}, async (err, status) => {
         if (!status) {
           res.status(412)
             .send({
@@ -41,34 +45,36 @@ router.route("/")
               data: err
             });
         } else {
-          bcrypt.genSalt(10, function (err, salt) {
-            bcrypt.hash(req.body.password, salt, async function (err, hash) {
-              // Store hash in your password DB.
-              if (err) {
-                console.log(`ERROR : ${err}`);
-              } else {
-                const user = await prisma.user.create({
-                  data: {
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: hash,
-                    role: req.body.role
-                  },
-                }).catch((error: string) => {
-                  res.send(error);
-                })
-
-                res.json(user)
-              }
-            });
-          });
+          var hash = await auth.generateHash(req.body.password)
+          const user = await prisma.user.create({
+            data: {
+              name: req.body.name,
+              email: req.body.email,
+              password: hash,
+              role: req.body.role
+            },
+          }).catch((error: string) => {
+            res.send(error);
+          })
+          res.json(user)
         }
       });
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('create', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 router.route("/login")
   .post(async (req: CustomRequest, res: Response) => {
 
+    if (req.ability.can('create', 'User')) {
       validator(req.body, loginValidation, {}, async (err, status) => {
         if (!status) {
           res.status(412)
@@ -78,33 +84,23 @@ router.route("/login")
               data: err
             });
         } else {
-
-          const users = await prisma.user.findMany({
-            where: {
-              email: req.body.email
-            }
-          }).catch((error: string) => {
-            res.send(error);
-          })
-
-          let isPasswordMatch = bcrypt.compareSync(req.body.password, users[0].password);
-          //console.log(value);
-          if ( isPasswordMatch ) {
+          const users = await auth.getUser(req.body.email).catch((error: object) => {
+            res.status(404).send("user not found");
+          });
+          let isPass = users[0]?.password != null ? bcrypt.compareSync(req.body.password, users[0].password) : false;
+          if (isPass) {
             const accessTokens = await prisma.accessTokens.create({
               data: {
                 clientId: users[0].id,
                 iat: Math.floor(Date.now() / 1000),
-                exp: Math.floor(Date.now() / 1000) + 3600,
+                exp: Math.floor(Date.now() / 1000) + (60 * 60),
               },
             }).catch((error: string) => {
               res.send(error);
             })
 
 
-            let encrypt = jwt.sign(
-              accessTokens,
-              process.env.SECRET
-            );
+            let encrypt = jwt.sign(accessTokens, process.env.SECRET);
             res.json({
               // id: accessTokens[0].id,
               clientId: users[0].id,
@@ -115,22 +111,55 @@ router.route("/login")
             res.status(401);
             res.send("Incorrect Password or Account Name")
           }
+
+
         }
       });
+
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('create', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
+
+
+
+
+
+
   })
 
 
 router.route("/accesstokens")
+  //Access Token 
   .get(async (req: CustomRequest, res: Response) => {
+    if (req.ability.can('read', 'accessTokes')) {
       const accessTokens = await prisma.accessTokens.findMany({
 
       }).catch((error: string) => {
         res.send(error);
       })
       res.send(accessTokens);
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
   .patch(async (req: CustomRequest, res: Response) => {
+    // console.log(req.body);
+    if (req.ability.can('update', 'accessTokes')) {
       const accessTokens = await prisma.accessTokens.update({
         data: {
           id: req.body.id,
@@ -143,6 +172,16 @@ router.route("/accesstokens")
       })
 
       res.json(accessTokens)
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('update', "accessTokes");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 router.route("/:id/accesstokens")
@@ -150,14 +189,25 @@ router.route("/:id/accesstokens")
     const {
       id
     } = req.params
-    const accessTokens = await prisma.accessTokens.findMany({
-      where: {
-        id,
-      },
-    }).catch((error: string) => {
-      console.log("server error" + error)
-    })
-    res.json(accessTokens);
+    if (req.ability.can('read', 'accessTokes')) {
+      const accessTokens = await prisma.accessTokens.findMany({
+        where: {
+          id,
+        },
+      }).catch((error: string) => {
+        console.log("server error" + error)
+      })
+      res.json(accessTokens);
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 router.route("/:id/accesstokens/:tokenid")
@@ -165,6 +215,7 @@ router.route("/:id/accesstokens/:tokenid")
     const {
       id
     } = req.params
+    if (req.ability.can('read', 'accessTokes')) {
       const accessTokens = await prisma.accessTokens.findMany({
         where: {
           id,
@@ -173,12 +224,23 @@ router.route("/:id/accesstokens/:tokenid")
         res.send(error);
       })
       res.json(accessTokens);
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
   .delete(async (req: CustomRequest, res: Response) => {
     const {
       id
     } = req.params
+    if (req.ability.can('delete', 'accessTokes')) {
       const accessTokens = await prisma.accessTokens.delete({
         where: {
           id,
@@ -187,6 +249,16 @@ router.route("/:id/accesstokens/:tokenid")
         res.send(error);
       })
       res.json(accessTokens);
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('delete', "accessTokes");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 router.route("/:id")
@@ -194,6 +266,7 @@ router.route("/:id")
     const {
       id
     } = req.params;
+    if (req.ability.can('read', 'user')) {
       const users = await prisma.user.findMany({
         where: {
           id,
@@ -203,13 +276,23 @@ router.route("/:id")
         res.json(error)
       })
       res.json(users);
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
   .put(async (req: CustomRequest, res: Response) => {
     const {
       id
     } = req.params
-
+    if (req.ability.can('update', 'user')) {
       const user = await prisma.user.update({
         where: {
           id
@@ -220,14 +303,23 @@ router.route("/:id")
         },
       })
       res.json(user)
-
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
   .delete(async (req: CustomRequest, res: Response) => {
     const {
       id
     } = req.params
-
+    if (req.ability.can('update', 'user')) {
       const user = await prisma.user.delete({
         where: {
           id,
@@ -236,7 +328,16 @@ router.route("/:id")
         res.json(error);
       })
       res.json(user)
-
+    } else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('update', "User");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 

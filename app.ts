@@ -5,11 +5,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var itemRouter = require("./routes/item");
 var orderRouter = require("./routes/order");
-
-
-const { auth } = require('express-openid-connect');
-
-const port = 3000
+import { defineAbilitiesFor } from './accesscontrol/accesscontrol';
+var jwt = require('jsonwebtoken');
 
 
 // view engine setup
@@ -21,29 +18,31 @@ app.use(express.urlencoded({
   extended: false
 }));
 interface CustomRequest extends Request {
-  oidc ? : any
+  ability ? : any
 }
 
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  baseURL: process.env.BASE_URL,
-  clientID: process.env.CLIENT_ID,
-  issuerBaseURL: process.env.ISSUER_BASE_URL,
-  secret: process.env.SECRET
-};
-app.use(auth(config));
+function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
+  const bearerHeader = req.headers['authorization'];
+  if (bearerHeader != null) {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
 
+    var decoded = jwt.decode(bearerToken);
+    res.setHeader("token", bearerToken);
 
-app.get('/', (req:CustomRequest, res:Response) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out')
-});
+  }
+  const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
+  req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
 
-app.use('/home', indexRouter);
+  next()
+}
+
+app.use(myLogger)
+
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/items', itemRouter);
 app.use('/orders', orderRouter);
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
-})
+
+module.exports = app;
