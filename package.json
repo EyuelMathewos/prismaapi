@@ -11,7 +11,7 @@
     "test": "jest",
     "testwatch": "jest --watch",
     "prisma:generate": "prisma generate",
-    "migrate": "prisma migrate resolve",
+    "migrate": "prisma migrate deploy",
     "migrate:up": "prisma migrate --experimental up --auto-approve --create-db",
     "migrate:dev": "prisma migrate dev"
   },
