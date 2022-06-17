@@ -1,14 +1,18 @@
 import express, { Request, Response } from 'express';
 import { validator } from "../validator/index";
 import { orderValidation } from "../validator/orderValidation";
-
 const router = express.Router();
+const { ForbiddenError } = require('@casl/ability');
 const { PrismaClient } = require('@prisma/client');
-const { requiresAuth } = require('express-openid-connect');
 const prisma = new PrismaClient()
 
+interface CustomRequest extends Request {
+  ability ? : any
+}
+
 router.route("/")
-  .get(async (req: Request, res: Response) => {
+  .get(async (req: CustomRequest, res: Response) => {
+    if (req.ability.can('read', 'Order')) {
       const orders = await prisma.order.findMany({
         include: {
           item: true
@@ -17,10 +21,21 @@ router.route("/")
         res.send(error);
       })
       res.json(orders);
+    }else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('read', "Order");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 
-  .post(requiresAuth(), async (req: Request, res: Response) => {
+  .post( async (req: CustomRequest, res: Response) => {
+    if (req.ability.can('create', 'Order')) {
       validator(req.body, orderValidation, {}, async (err, status) => {
         if (!status) {
           res.status(412)
@@ -42,13 +57,24 @@ router.route("/")
           res.json(order)
         }
       });
+    }else {
+      try {
+        ForbiddenError.from(req.ability).throwUnlessCan('create', "Order");
+      } catch (error: any) {
+        return res.status(403).send({
+          status: 'forbidden',
+          message: error.message
+        });
+      }
+    }
   })
 
 router.route("/customerorder/:id")
-  .get(async (req: Request, res: Response) => {
+  .get(async (req: CustomRequest, res: Response) => {
     const {
       id
     } = req.params;
+    if (req.ability.can('read', 'Order')) {
       const users = await prisma.user.findMany({
         where: {
           id,
@@ -60,6 +86,18 @@ router.route("/customerorder/:id")
         res.send(error);
       })
       res.json(users);
+    } else {
+      const order = await prisma.order.create({
+        data: {
+          itemId: parseInt(req.body.itemId),
+          itemAmount: parseInt(req.body.itemAmount),
+          customerId: parseInt(req.body.customerId)
+        },
+      }).catch((error: string) => {
+        res.send(error);
+      })
+      res.json(order)
+    }
 
   })
 
