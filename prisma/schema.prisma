@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = ${{ secrets.HEROKU_API_KEY }}
+  url      = env("DATABASE_URL")
 }
 
 model User {
