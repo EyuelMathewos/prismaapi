@@ -1,6 +1,6 @@
 import { AbilityBuilder, Ability, ForbiddenError  } from '@casl/ability'
 
-import { User, accessTokens, Prisma } from '@prisma/client';
+
 
 //ForbiddenError.setDefaultMessage(() => "Default error message");
 
@@ -14,10 +14,10 @@ if(user==1){
   can('update', 'User');
   cannot('delete', 'User');
 
-  can('read', 'accessTokens');
-  can('create', 'accessTokens');
-  can('update', 'accessTokens');
-  cannot('delete', 'accessTokens');
+  can('read', 'accesstokens ');
+  can('create', 'accesstokens ');
+  can('update', 'accesstokens ');
+  cannot('delete', 'accesstokens ');
 
   can('read', 'Item');
   can('create', 'Item');
@@ -37,10 +37,10 @@ if(user==2){
   can('create', 'User');
   can('update', 'User');
 
-  can('read', 'accessTokens');
-  can('create', 'accessTokens');
-  can('update', 'accessTokens');
-  cannot('delete', 'accessTokens');
+  can('read', 'accesstokens ');
+  can('create', 'accesstokens ');
+  can('update', 'accesstokens ');
+  cannot('delete', 'accesstokens ');
 
 
   can('read', 'Item');
@@ -56,10 +56,10 @@ if(user==3){
   can('create', 'User');
   can('update', 'User');
 
-  can('read', 'accessTokens');
-  can('create', 'accessTokens');
-  can('update', 'accessTokens');
-  cannot('delete', 'accessTokens');
+  can('read', 'accesstokens ');
+  can('create', 'accesstokens ');
+  can('update', 'accesstokens ');
+  cannot('delete', 'accesstokens ');
 
 
   can('read', 'Item');
