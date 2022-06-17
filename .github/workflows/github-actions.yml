@@ -34,11 +34,11 @@ jobs:
       - run: npm run build
       # run the migration in the test database
       - run: migrate:up
-      - run: npm run test
+#       - run: npm run test
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' # Only deploy master
-    needs: test
+#     needs: test
     steps:
       - uses: actions/checkout@v2
       # - name: Run production migration
