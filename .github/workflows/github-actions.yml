@@ -45,8 +45,8 @@ jobs:
       # Note: disabled migrate deploy in favour of using the Procfile release phase
       - run: npm install
       - run: npm run migrate
-      #   env:
-      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        env:
+             DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - uses: akhileshns/heroku-deploy@v3.12.12
         name: Deploy to Heroku
         with:
