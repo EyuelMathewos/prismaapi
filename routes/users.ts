@@ -89,7 +89,7 @@ router.route("/login")
           });
           let isPass = users[0]?.password != null ? bcrypt.compareSync(req.body.password, users[0].password) : false;
           if (isPass) {
-            const accessTokens = await prisma.accessTokens.create({
+            const accesstokens = await prisma.accesstokens.create({
               data: {
                 clientId: users[0].id,
                 iat: Math.floor(Date.now() / 1000),
@@ -100,9 +100,9 @@ router.route("/login")
             })
 
 
-            let encrypt = jwt.sign(accessTokens, process.env.SECRET);
+            let encrypt = jwt.sign(accesstokens, process.env.SECRET);
             res.json({
-              // id: accessTokens[0].id,
+              // id: accesstokens[0].id,
               clientId: users[0].id,
               token: encrypt
             });
@@ -139,12 +139,12 @@ router.route("/accesstokens")
   //Access Token 
   .get(async (req: CustomRequest, res: Response) => {
     if (req.ability.can('read', 'accessTokes')) {
-      const accessTokens = await prisma.accessTokens.findMany({
+      const accesstokens = await prisma.accesstokens.findMany({
 
       }).catch((error: string) => {
         res.send(error);
       })
-      res.send(accessTokens);
+      res.send(accesstokens);
     } else {
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
@@ -160,7 +160,7 @@ router.route("/accesstokens")
   .patch(async (req: CustomRequest, res: Response) => {
     // console.log(req.body);
     if (req.ability.can('update', 'accessTokes')) {
-      const accessTokens = await prisma.accessTokens.update({
+      const accesstokens = await prisma.accesstokens.update({
         data: {
           id: req.body.id,
           clientId: req.body.clientId,
@@ -171,7 +171,7 @@ router.route("/accesstokens")
         res.send(error);
       })
 
-      res.json(accessTokens)
+      res.json(accesstokens)
     } else {
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('update', "accessTokes");
@@ -190,14 +190,14 @@ router.route("/:id/accesstokens")
       id
     } = req.params
     if (req.ability.can('read', 'accessTokes')) {
-      const accessTokens = await prisma.accessTokens.findMany({
+      const accesstokens = await prisma.accesstokens.findMany({
         where: {
           id,
         },
       }).catch((error: string) => {
         console.log("server error" + error)
       })
-      res.json(accessTokens);
+      res.json(accesstokens);
     } else {
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
@@ -216,14 +216,14 @@ router.route("/:id/accesstokens/:tokenid")
       id
     } = req.params
     if (req.ability.can('read', 'accessTokes')) {
-      const accessTokens = await prisma.accessTokens.findMany({
+      const accesstokens = await prisma.accesstokens.findMany({
         where: {
           id,
         },
       }).catch((error: string) => {
         res.send(error);
       })
-      res.json(accessTokens);
+      res.json(accesstokens);
     } else {
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('read', "accessTokes");
@@ -241,14 +241,14 @@ router.route("/:id/accesstokens/:tokenid")
       id
     } = req.params
     if (req.ability.can('delete', 'accessTokes')) {
-      const accessTokens = await prisma.accessTokens.delete({
+      const accesstokens = await prisma.accesstokens.delete({
         where: {
           id,
         },
       }).catch((error: string) => {
         res.send(error);
       })
-      res.json(accessTokens);
+      res.json(accesstokens);
     } else {
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('delete', "accessTokes");
