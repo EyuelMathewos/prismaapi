@@ -1,7 +1,7 @@
 import supertest from "supertest";
 const userapi = require("../app");
 const request = supertest(userapi);
-const { auth } = require('express-openid-connect');
+
 
 describe('user status test',()=>{
     beforeAll( async()=>{
