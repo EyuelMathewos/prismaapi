@@ -25,6 +25,7 @@ model accesstokens {
   clientId    Int 
   iat         Int
   exp         Int
+  role        Int
   tokens User   @relation(fields: [clientId], references: [id])
 }
 

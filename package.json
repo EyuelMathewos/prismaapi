@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/index.js",
-    "dev": "ts-node ./index",
+    "dev": "nodemon ./index.ts",
     "build": "tsc",
     "seed": "ts-node ./seed/seed.ts",
     "test": "jest",
