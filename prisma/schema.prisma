@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id           Int         @id @default(autoincrement())
-  email        String         @unique
+  email        String      @unique
   name         String?
   password     String
   role         Int
@@ -43,4 +43,28 @@ model Order {
     customerId   Int 
     orders User   @relation(fields: [customerId], references: [id])
     item Item   @relation(fields: [itemId], references: [id])
+}
+
+model accesslist {
+    id           Int         @id @default(autoincrement())
+    name         String      @unique
+    action       String
+    subject      String
+    conditions   Json
+    fields       Json
+    access permissions[]
+}
+
+model roles {
+    id           Int         @id @default(autoincrement())
+    name         String
+    role permissions[]
+}
+
+model permissions {
+    id           Int         @id @default(autoincrement())
+    accessId     Int  
+    roleId       Int
+    access accesslist   @relation(fields: [accessId], references: [id])
+    role roles   @relation(fields: [roleId], references: [id])
 }

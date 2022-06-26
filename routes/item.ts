@@ -34,15 +34,7 @@ router.route("/")
 
   .post(async (req: CustomRequest, res: Response) => {
     if (req.ability.can('create', 'Item')) {
-      validator(req.body, itemValidation, {}, async (err, status) => {
-        if (!status) {
-          res.status(412)
-            .send({
-              success: false,
-              message: 'Validation failed',
-              data: err
-            });
-        } else {
+      validator(req.body, itemValidation, {}).then(async (response: any) => {
           const item = await prisma.item.create({
             data: {
               itemname: req.body.itemname,
@@ -53,7 +45,7 @@ router.route("/")
           })
 
           res.json(item)
-        }
+        
       });
     } else {
       try {
