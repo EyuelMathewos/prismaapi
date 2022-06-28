@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "accesslist" ALTER COLUMN "fields" DROP NOT NULL,
+ALTER COLUMN "fields" SET DATA TYPE TEXT;

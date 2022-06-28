@@ -5,7 +5,7 @@ import { createRule, updateRule } from "../validator/permissionValidation";
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const { ForbiddenError } = require('@casl/ability');
-import { permittedFieldsOf } from '@casl/ability/extra';
+// import { permittedFieldsOf } from '@casl/ability/extra';
 import { accessibleBy } from '@casl/prisma';
 const prisma = new PrismaClient();
 
@@ -13,13 +13,13 @@ interface CustomRequest extends Request {
   ability ? : any
 }
 
-const options = { fieldsFrom: (rule: { fields: any; }) => rule.fields || "*" };
+// const options = { fieldsFrom: (rule: { fields: any; }) => rule.fields || "*" };
 
 router.route("/")
   .get(async (req: CustomRequest, res: Response) => {
       try{
             // ForbiddenError.from(req.ability).throwUnlessCan('read', "permissions");
-            let fields = permittedFieldsOf(req.ability, 'read', "permissions" , options);
+            // let fields = permittedFieldsOf(req.ability, 'read', "permissions" , options);
             const permissions = await prisma.permissions.findMany({});
             res.json(permissions);
       }catch (error: any) {

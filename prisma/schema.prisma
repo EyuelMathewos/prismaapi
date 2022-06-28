@@ -51,7 +51,7 @@ model accesslist {
     action       String
     subject      String
     conditions   Json
-    fields       Json
+    fields       String?
     access permissions[]
 }
 

@@ -9,7 +9,7 @@ const orderRouter = require("./routes/order");
 const accessListRouter = require("./routes/accesslist");
 const rolesRouter = require("./routes/roles");
 const permissionRouter = require("./routes/permissions");
-import { defineAbilitiesFor } from './accesscontrol/accesscontrol';
+const defineAbilitiesFor =  require('./accesscontrol/accesscontrol');
 const { getUserRoles } = require("./service/auth")
 const { interpolate } = require('./service/interpolate');
 
@@ -28,6 +28,7 @@ interface CustomRequest extends Request {
 }
 
 async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
+  try{
   const bearerHeader = req.headers['authorization'];
   if (bearerHeader != null) {
     const bearer = bearerHeader.split(' ');
@@ -35,17 +36,22 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
 
     var decoded = jwt.decode(bearerToken);
     res.setHeader("token", bearerToken);
-    let user= { id : 1 };
+    let user= { id : decoded.clientId };
     const usersPermissions = await getUserRoles(decoded.clientId);
-    console.log("user permissions")
-    console.log(usersPermissions)
     let replacedIdAttribute =interpolate(JSON.stringify(usersPermissions),{user});
-    console.log("user replacedIdAttribute")
-    console.log(replacedIdAttribute)
+    if (usersPermissions != null) {
+      const userAbility = defineAbilitiesFor( replacedIdAttribute );
+      req.ability = userAbility;
+    }
   }
-  const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
-  req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
+  else{
+    const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
+    req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
+  }
 
+  }catch(error){
+    console.log("error"+ error)
+  }
   next()
 }
 
