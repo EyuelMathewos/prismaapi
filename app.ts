@@ -42,12 +42,12 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
     if (usersPermissions != null) {
       const userAbility = defineAbilitiesFor( replacedIdAttribute );
       req.ability = userAbility;
+    } else{
+      const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
+      req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
     }
   }
-  else{
-    const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
-    req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
-  }
+
 
   }catch(error){
     console.log("error"+ error)

@@ -4,35 +4,35 @@ const prisma = new PrismaClient();
 async function main(){
   const createMany = await prisma.accesslist.createMany({
     data: [
-      { name: 'read user', action: 'read', subject: 'users', conditions:{}, fields:"" },
-      { name: 'create user', action: 'create', subject: 'users', conditions:{}, fields:"" },
-      { name: 'update user', action: 'update', subject: 'users', conditions:{ id: '${user.id}'}, fields:"" },
-      { name: 'delete user', action: 'delete', subject: 'users', conditions:{ id: '${user.id}'}, fields:"" },
+      { name: 'read user', action: 'read', subject: 'user', conditions:{}, fields: "[{}]" },
+      { name: 'create user', action: 'create', subject: 'user', conditions:{}, fields: "[{}]" },
+      { name: 'update user', action: 'update', subject: 'user', conditions:{ id: '${user.id}'}, fields: "[{}]" },
+      { name: 'delete user', action: 'delete', subject: 'user', conditions:{ id: '${user.id}'}, fields: "[{}]" },
   
-      { name: 'read accesstokens', action: 'read', subject: 'accesstokens', conditions:{}, fields:"" },
-      { name: 'create accesstokens', action: 'create', subject: 'accesstokens', conditions:{}, fields:"" },
-      { name: 'update accesstokens', action: 'update', subject: 'accesstokens', conditions:{}, fields:"" },
-      { name: 'delete accesstokens', action: 'delete', subject: 'accesstokens', conditions:{}, fields:"" },
+      { name: 'read accesstokens', action: 'read', subject: 'accesstokens', conditions:{}, fields: "[{}]" },
+      { name: 'create accesstokens', action: 'create', subject: 'accesstokens', conditions:{}, fields: "[{}]" },
+      { name: 'update accesstokens', action: 'update', subject: 'accesstokens', conditions:{}, fields: "[{}]" },
+      { name: 'delete accesstokens', action: 'delete', subject: 'accesstokens', conditions:{}, fields: "[{}]" },
   
-      { name: 'read permissions', action: 'read', subject: 'permissions', conditions:{}, fields:"" },
-      { name: 'create permissions', action: 'create', subject: 'permissions', conditions:{}, fields:"" },
-      { name: 'update permissions', action: 'update', subject: 'permissions', conditions:{}, fields:"" },
-      { name: 'delete permissions', action: 'delete', subject: 'permissions', conditions:{}, fields:"" },
+      { name: 'read permissions', action: 'read', subject: 'permissions', conditions:{}, fields: "[{}]" },
+      { name: 'create permissions', action: 'create', subject: 'permissions', conditions:{}, fields: "[{}]" },
+      { name: 'update permissions', action: 'update', subject: 'permissions', conditions:{}, fields: "[{}]" },
+      { name: 'delete permissions', action: 'delete', subject: 'permissions', conditions:{}, fields: "[{}]" },
   
-      { name: 'read roles', action: 'read', subject: 'roles', conditions:{}, fields:"" },
-      { name: 'create roles', action: 'create', subject: 'roles', conditions:{}, fields:"" },
-      { name: 'update roles', action: 'update', subject: 'roles', conditions:{}, fields:"" },
-      { name: 'delete roles', action: 'delete', subject: 'roles', conditions:{}, fields:"" },
+      { name: 'read roles', action: 'read', subject: 'roles', conditions:{}, fields: "[{}]" },
+      { name: 'create roles', action: 'create', subject: 'roles', conditions:{}, fields: "[{}]" },
+      { name: 'update roles', action: 'update', subject: 'roles', conditions:{}, fields: "[{}]" },
+      { name: 'delete roles', action: 'delete', subject: 'roles', conditions:{}, fields: "[{}]" },
   
-      { name: 'read Item', action: 'read', subject: 'Item', conditions:{}, fields:"" },
+      { name: 'read Item', action: 'read', subject: 'Item', conditions:{}, fields: "[{}]" },
       { name: 'create Item', action: 'create', subject: 'Item', conditions:{}, fields: "" },
-      { name: 'update Item', action: 'update', subject: 'Item', conditions:{ id: '${user.id}'}, fields:"" },
-      { name: 'delete Item', action: 'delete', subject: 'Item', conditions:{ id: '${user.id}'}, fields:"" },
+      { name: 'update Item', action: 'update', subject: 'Item', conditions:{ id: '${user.id}'}, fields: "[{}]" },
+      { name: 'delete Item', action: 'delete', subject: 'Item', conditions:{ id: '${user.id}'}, fields: "[{}]" },
   
-      { name: 'read accesslist', action: 'read', subject: 'accesslist', conditions:{}, fields:"" },
-      { name: 'create accesslist', action: 'create', subject: 'accesslist', conditions:{}, fields:"" },
-      { name: 'update accesslist', action: 'update', subject: 'accesslist', conditions:{}, fields:"" },
-      { name: 'delete accesslist', action: 'delete', subject: 'accesslist', conditions:{}, fields:"" },
+      { name: 'read accesslist', action: 'read', subject: 'accesslist', conditions:{}, fields: "[{}]" },
+      { name: 'create accesslist', action: 'create', subject: 'accesslist', conditions:{}, fields: "[{}]" },
+      { name: 'update accesslist', action: 'update', subject: 'accesslist', conditions:{}, fields: "[{}]" },
+      { name: 'delete accesslist', action: 'delete', subject: 'accesslist', conditions:{}, fields: "[{}]" },
     ],
   })
   const rol = await prisma.roles.createMany({

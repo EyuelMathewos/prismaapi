@@ -1,15 +1,19 @@
-import { Ability, RawRuleOf } from '@casl/ability';
+import { Ability } from '@casl/ability';
 
-export const actions = ['manage', 'create', 'read', 'update', 'delete'];
-export const subjects = ['Article', 'all'];
+interface RawRule {
+  action: string | string[]
+  subject: string | string[]
+  /** an array of fields to which user has (or not) access */
+  fields?: JSON | string[] | undefined | any
+  /** an object of conditions which restricts the rule scope */
+  conditions?: any
+  /** indicates whether rule allows or forbids something */
+  inverted?: boolean
+  /** message which explains why rule is forbidden */
+  reason?: string
+}
 
-export type AppAbilities = [
-  typeof actions[number],
-  typeof subjects[number]
-];
-export type AppAbility = Ability < AppAbilities > ;
-
-const defineAbilitiesFor = (rules: RawRuleOf < AppAbility > []) => {
+const defineAbilitiesFor = (rules: RawRule []) => {
   let createAbility = new Ability(rules);
 
   return createAbility;

@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model user {
   id           Int         @id @default(autoincrement())
   email        String      @unique
   name         String?
@@ -26,7 +26,7 @@ model accesstokens {
   iat         Int
   exp         Int
   role        Int
-  tokens User   @relation(fields: [clientId], references: [id])
+  tokens user   @relation(fields: [clientId], references: [id])
 }
 
 model Item {
@@ -41,7 +41,7 @@ model Order {
     itemId       Int         @unique
     itemAmount   Int
     customerId   Int 
-    orders User   @relation(fields: [customerId], references: [id])
+    orders user   @relation(fields: [customerId], references: [id])
     item Item   @relation(fields: [itemId], references: [id])
 }
 
@@ -51,8 +51,8 @@ model accesslist {
     action       String
     subject      String
     conditions   Json
-    fields       String?
-    access permissions[]
+    fields       Json        
+    access permissions[]      
 }
 
 model roles {

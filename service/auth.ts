@@ -1,7 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { access } from 'fs';
 const  { PrismaClient } = require('@prisma/client');
-const  { accesslist } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 function authHandler(){
@@ -31,17 +29,7 @@ export function getUserRoles  ( clientId : any ) {
             id: clientId
           }
         });
-        // let permissions = await prisma.permissions.findMany({
-        //  // include: { access: true },
-        //   where: {
-        //     roleId: users[0].role
-        //   },
-        //   include: { access: true },           
-        // });
-
-        let permissions = await prisma.$queryRaw`SELECT * FROM 
-        permissions FULL OUTER JOIN accesslist ON permissions."accessId" = accesslist.id WHERE permissions."roleId"= ${users[0].role}`
-
+        let permissions = await prisma.$queryRaw`SELECT * FROM permissions FULL OUTER JOIN accesslist ON permissions."accessId" = accesslist.id WHERE permissions."roleId"= ${users[0].role}`;
         resolve(permissions);
       }catch( error ){
         reject(error);
