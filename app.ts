@@ -10,7 +10,7 @@ const accessListRouter = require("./routes/accesslist");
 const rolesRouter = require("./routes/roles");
 const permissionRouter = require("./routes/permissions");
 const defineAbilitiesFor =  require('./accesscontrol/accesscontrol');
-const { getUserRoles } = require("./service/auth")
+const { getUserRoles, anonymousAbility } = require("./service/auth")
 const { interpolate } = require('./service/interpolate');
 
 
@@ -30,7 +30,7 @@ interface CustomRequest extends Request {
 async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
   try{
   const bearerHeader = req.headers['authorization'];
-  if (bearerHeader != null) {
+  if (typeof bearerHeader != 'undefined') {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
 
@@ -42,10 +42,11 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
     if (usersPermissions != null) {
       const userAbility = defineAbilitiesFor( replacedIdAttribute );
       req.ability = userAbility;
-    } else{
-      const ANONYMOUS_ABILITY = defineAbilitiesFor(0)
-      req.ability = decoded != null ? defineAbilitiesFor(decoded.role) : ANONYMOUS_ABILITY
-    }
+    } 
+  }else{
+    const ANONYMOUS_ABILITY = await anonymousAbility();
+    const anonymousPermissions = defineAbilitiesFor( ANONYMOUS_ABILITY );
+    req.ability = anonymousPermissions;
   }
 
 

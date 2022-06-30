@@ -82,6 +82,7 @@ router.route("/")
 router.route("/login")
   .post(async (req: CustomRequest, res: Response) => {
         try{
+          console.log(req.ability)
           ForbiddenError.from(req.ability).throwUnlessCan('create', "user");
           validator(req.body, loginValidation, {}).then(async (response: any) => {
             let valdationStatus: Boolean = response.status;
