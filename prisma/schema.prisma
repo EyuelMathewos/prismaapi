@@ -16,17 +16,7 @@ model user {
   name         String?
   password     String
   role         Int
-  tokens accesstokens[]
   orders Order[]
-}
-
-model accesstokens {
-  id          Int @id @default(autoincrement())
-  clientId    Int 
-  iat         Int
-  exp         Int
-  role        Int
-  tokens user   @relation(fields: [clientId], references: [id])
 }
 
 model Item {
@@ -45,26 +35,20 @@ model Order {
     item Item   @relation(fields: [itemId], references: [id])
 }
 
-model accesslist {
-    id           Int         @id @default(autoincrement())
-    name         String      @unique
-    action       String
-    subject      String
-    conditions   Json
-    fields       Json        
-    access permissions[]      
-}
 
 model roles {
     id           Int         @id @default(autoincrement())
     name         String
-    role permissions[]
+    permissionslist permissions[]
 }
 
 model permissions {
-    id           Int         @id @default(autoincrement())
-    accessId     Int  
+    id           Int         @id @default(autoincrement())  
     roleId       Int
-    access accesslist   @relation(fields: [accessId], references: [id])
-    role roles   @relation(fields: [roleId], references: [id])
+    name         String      
+    action       String
+    subject      String
+    conditions   Json
+    fields       Json        
+    permissionslist roles   @relation(fields: [roleId], references: [id])
 }

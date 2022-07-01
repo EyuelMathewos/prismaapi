@@ -29,7 +29,11 @@ export function getUserRoles  ( clientId : any ) {
             id: clientId
           }
         });
-        let permissions = await prisma.$queryRaw`SELECT * FROM permissions FULL OUTER JOIN accesslist ON permissions."accessId" = accesslist.id WHERE permissions."roleId"= ${users[0].role}`;
+        const permissions = await prisma.permissions.findMany({
+          where: {
+            roleId : users.role
+          },
+        });
         resolve(permissions);
       }catch( error ){
         reject(error);
@@ -40,12 +44,16 @@ export function getUserRoles  ( clientId : any ) {
 export function anonymousAbility  ( ) {  
   return new Promise(async  (resolve, reject) => {
       try{
-        const roles = await prisma.roles.findFirst({
+        const anonymousrole = await prisma.roles.findFirst({
           where: {
             name: "ANONYMOUS_ABILITY"
           }
         });
-        let permissions = await prisma.$queryRaw`SELECT * FROM permissions FULL OUTER JOIN accesslist ON permissions."accessId" = accesslist.id WHERE permissions."roleId"= ${roles.id}`;
+        const permissions = await prisma.permissions.findMany({
+          where: {
+            roleId : anonymousrole.id
+          },
+        });
         resolve(permissions);
       }catch( error ){
         reject(error);

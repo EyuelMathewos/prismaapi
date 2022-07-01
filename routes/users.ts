@@ -82,26 +82,23 @@ router.route("/")
 router.route("/login")
   .post(async (req: CustomRequest, res: Response) => {
         try{
-          console.log(req.ability)
           ForbiddenError.from(req.ability).throwUnlessCan('create', "user");
           validator(req.body, loginValidation, {}).then(async (response: any) => {
             let valdationStatus: Boolean = response.status;
             if(valdationStatus){
                   const user = await getUser(req.body.email);
-                  let isPass = user[0]?.password != null ? bcrypt.compareSync(req.body.password, user[0].password) : false;
+                  let isPass = user?.password != null ? bcrypt.compareSync(req.body.password, user.password) : false;
                   if (isPass) {
-                    const accesstokens = await prisma.accesstokens.create({
-                      data: {
-                        clientId: user[0].id,
+                    const accesstokens = {
+                        clientId: user.id,
                         iat: Math.floor(Date.now() / 1000),
                         exp: Math.floor(Date.now() / 1000) + (60 * 60),
-                        role: user[0].role
-                      },
-                    })
+                        role: user.role
+                    };
+                   
                     let encrypt = jwt.sign(accesstokens, process.env.SECRET);
                     res.json({
-                      // id: accesstokens[0].id,
-                      clientId: user[0].id,
+                      clientId: user.id,
                       token: encrypt
                     });
                   } 
