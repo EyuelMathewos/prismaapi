@@ -33,10 +33,8 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
       const bearer = bearerHeader.split(' ');
       const bearerToken = bearer[1];
       var verifydecoded = await verifyToken( bearerToken );
-      console.log("verify decoded")
-      console.log(verifydecoded)
       if (verifydecoded instanceof Error) {
-        throw (verifydecoded);
+        throw ({ TokenExpiredError: 'jwt expired' });
       }
       res.setHeader("token", bearerToken);
       let user = { id: verifydecoded.clientId };
@@ -53,7 +51,7 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
       req.ability = anonymousPermissions;
     }
   } catch (error) {
-      console.log(error);
+      next(JSON.stringify({ TokenExpiredError: 'jwt expired' }));
   }
   next()
 }

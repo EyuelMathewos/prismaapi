@@ -18,7 +18,7 @@ interface CustomRequest extends Request {
   ability ? : any
 }
 const ALL_FIELDS = ["email","name"];
-const options = { fieldsFrom: (rule: { fields? : JSON | any; }) => rule.fields } ;
+const options = { fieldsFrom: (rule: { fields? : JSON | any; }) => rule.fields || ALL_FIELDS } ;
 
 
 
@@ -29,7 +29,7 @@ router.route("/")
             let fields = permittedFieldsOf(req.ability, 'read', "user" , options);
             const user = await prisma.user.findMany({
               where: accessibleBy(req.ability).user,
-              select: selectedFields(fields, ALL_FIELDS)
+              select: selectedFields( fields )
             });
             res.json(user);
       }catch (error: any) {
