@@ -1,6 +1,9 @@
 import bcrypt from 'bcryptjs';
 const  { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken');
+const { pickFields } = require('./selectFields');
+
 
 function authHandler(){
 
@@ -34,13 +37,14 @@ export function getUserRoles  ( clientId : any ) {
             roleId : users.role
           },
         });
-        resolve(permissions);
+        const FILTERED_LIST_ABILITY = pickFields( permissions );
+        resolve(FILTERED_LIST_ABILITY);
       }catch( error ){
         reject(error);
       }
   })
 }
-// ANONYMOUS_ABILITY
+
 export function anonymousAbility  ( ) {  
   return new Promise(async  (resolve, reject) => {
       try{
@@ -54,7 +58,8 @@ export function anonymousAbility  ( ) {
             roleId : anonymousrole.id
           },
         });
-        resolve(permissions);
+        const FILTERED_LIST_ABILITY = pickFields( permissions );
+        resolve( FILTERED_LIST_ABILITY );
       }catch( error ){
         reject(error);
       }
@@ -74,3 +79,16 @@ export function generateHash ( password : string ) {
       });
     }
 )}
+
+export function verifyToken( bearerToken:string ){
+  return new Promise(async  (resolve, reject) => {
+      jwt.verify(bearerToken, process.env.SECRET,
+        function (err: Error, decoded: object) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve( decoded )
+          }
+        });
+  });
+}
