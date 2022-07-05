@@ -14,7 +14,8 @@
     "prisma:generate": "prisma generate",
     "migrate": "prisma db push",
     "migrate:up": "prisma migrate --experimental up --auto-approve --create-db",
-    "migrate:dev": "prisma migrate dev"
+    "migrate:dev": "prisma migrate dev",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,9 @@
     "@types/auth0": "^2.35.0",
     "@types/jest": "^28.1.1",
     "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.19.0",
     "prisma": "^3.14.0",
     "supertest": "^6.2.3",
     "ts-node": "^10.7.0",

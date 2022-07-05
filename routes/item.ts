@@ -2,8 +2,8 @@ import express, { Request, Response } from 'express';
 import { validator } from "../validator/index";
 import { itemValidation } from "../validator/itemValidation";
 
-var router = express.Router();
-var { PrismaClient } = require('@prisma/client');
+const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
 const { ForbiddenError } = require('@casl/ability');
 
 const prisma = new PrismaClient()

@@ -39,13 +39,13 @@ router.route("/")
       try{
           // ForbiddenError.from(req.ability).throwUnlessCan('create', "permissions");
           validator(req.body, createRule, {}).then(async (response: any) => {
-            let accessId: number = parseInt(req.body.accessId);
-            let roleId: number = parseInt(req.body.roleId);
-            let data = {
+            const accessId: number = parseInt(req.body.accessId);
+            const roleId: number = parseInt(req.body.roleId);
+            const data = {
               accessId,
               roleId
             }
-            let valdationStatus: Boolean = response.status;
+            const valdationStatus: boolean = response.status;
             if( valdationStatus ){
                     const permissions = await prisma.permissions.create({
                        data,
@@ -70,7 +70,7 @@ router.route("/")
 
 router.route("/:id")
   .get(async (req: CustomRequest, res: Response) => {
-      const id = parseInt(req.params.id);;
+      const id = parseInt(req.params.id);
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('read', "permissions");
         const permissions = await prisma.permissions.findMany({
@@ -95,9 +95,9 @@ router.route("/:id")
 
   .put(async (req: CustomRequest, res: Response) => {
     const id = parseInt(req.params.id);
-    let accessId: number = parseInt(req.body.accessId);
-    let roleId: number = parseInt(req.body.roleId);
-    let data = {
+    const accessId: number = parseInt(req.body.accessId);
+    const roleId: number = parseInt(req.body.roleId);
+    const data = {
       accessId,
       roleId
     }

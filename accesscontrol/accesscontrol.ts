@@ -14,7 +14,7 @@ interface RawRule {
 }
 
 const defineAbilitiesFor = (rules: RawRule []) => {
-  let createAbility = new Ability(rules);
+  const createAbility = new Ability(rules);
 
   return createAbility;
 };

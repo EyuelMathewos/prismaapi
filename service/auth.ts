@@ -5,9 +5,7 @@ const jwt = require('jsonwebtoken');
 const { pickFields } = require('./selectFields');
 
 
-function authHandler(){
 
-}
 
 export function getUser  ( email : string ) {
   return new Promise(async  (resolve, reject) => {

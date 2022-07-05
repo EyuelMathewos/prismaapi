@@ -26,7 +26,7 @@ router.route("/")
   .get(async (req: CustomRequest, res: Response) => {
       try{
             ForbiddenError.from(req.ability).throwUnlessCan('read', "user");
-            let fields = permittedFieldsOf(req.ability, 'read', "user" , options);
+            const fields = permittedFieldsOf(req.ability, 'read', "user" , options);
             const user = await prisma.user.findMany({
               where: accessibleBy(req.ability).user,
               select: selectedFields( fields )
@@ -48,11 +48,11 @@ router.route("/")
   .post(async (req: CustomRequest, res: Response) => {
       try{
           ForbiddenError.from(req.ability).throwUnlessCan('create', "user");
-          let role : Number = parseInt(req.body.role)
+          const role : number = parseInt(req.body.role)
           validator(req.body, validationRule, {}).then(async (response: any) => {
-            let valdationStatus: Boolean = response.status;
+            const valdationStatus: boolean = response.status;
             if( valdationStatus ){
-                    var hash = await generateHash(req.body.password);
+                    const hash = await generateHash(req.body.password);
                     const user = await prisma.user.create({
                       data: {
                         name: req.body.name,
@@ -84,10 +84,10 @@ router.route("/login")
         try{
           ForbiddenError.from(req.ability).throwUnlessCan('create', "user");
           validator(req.body, loginValidation, {}).then(async (response: any) => {
-            let valdationStatus: Boolean = response.status;
+            const valdationStatus: boolean = response.status;
             if(valdationStatus){
                   const user = await getUser(req.body.email);
-                  let isPass = user?.password != null ? bcrypt.compareSync(req.body.password, user.password) : false;
+                  const isPass = user?.password != null ? bcrypt.compareSync(req.body.password, user.password) : false;
                   if (isPass) {
                     const accesstokens = {
                         clientId: user.id,
@@ -96,7 +96,7 @@ router.route("/login")
                         role: user.role
                     };
                    
-                    let encrypt = jwt.sign(accesstokens, process.env.SECRET);
+                    const encrypt = jwt.sign(accesstokens, process.env.SECRET);
                     res.json({
                       clientId: user.id,
                       token: encrypt
@@ -171,7 +171,7 @@ router.route("/accesstokens")
 
 router.route("/:id/accesstokens")
   .get(async (req: CustomRequest, res: Response) => {
-    const id = parseInt(req.params.id);;
+    const id = parseInt(req.params.id);
         try{
             ForbiddenError.from(req.ability).throwUnlessCan('read', "accesstokens");
             const accesstokens = await prisma.accesstokens.findMany({
@@ -217,7 +217,7 @@ router.route("/:id/accesstokens/:tokenid")
   })
 
   .delete(async (req: CustomRequest, res: Response) => {
-    const id = parseInt(req.params.id);;
+    const id = parseInt(req.params.id);
            try{
               ForbiddenError.from(req.ability).throwUnlessCan('delete', "accesstokens");
               const accesstokens = await prisma.accesstokens.delete({
@@ -241,7 +241,7 @@ router.route("/:id/accesstokens/:tokenid")
 
 router.route("/:id")
   .get(async (req: CustomRequest, res: Response) => {
-      const id = parseInt(req.params.id);;
+      const id = parseInt(req.params.id);
       try {
         ForbiddenError.from(req.ability).throwUnlessCan('read', "user");
         const user = await prisma.user.findMany({

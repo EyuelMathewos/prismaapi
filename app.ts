@@ -32,14 +32,14 @@ async function myLogger(req: CustomRequest, res: Response, next: NextFunction) {
     if (typeof bearerHeader != 'undefined') {
       const bearer = bearerHeader.split(' ');
       const bearerToken = bearer[1];
-      var verifydecoded = await verifyToken( bearerToken );
+      const verifydecoded = await verifyToken( bearerToken );
       if (verifydecoded instanceof Error) {
         throw ({ TokenExpiredError: 'jwt expired' });
       }
       res.setHeader("token", bearerToken);
-      let user = { id: verifydecoded.clientId };
+      const user = { id: verifydecoded.clientId };
       const usersPermissions = await getUserRoles(verifydecoded.clientId);
-      let replacedIdAttribute = interpolate(JSON.stringify(usersPermissions), {user});
+      const replacedIdAttribute = interpolate(JSON.stringify(usersPermissions), {user});
 
       if (usersPermissions != null) {
         const userAbility = defineAbilitiesFor(replacedIdAttribute);
