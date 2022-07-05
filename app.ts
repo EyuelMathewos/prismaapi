@@ -5,7 +5,6 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const itemRouter = require("./routes/item");
 const orderRouter = require("./routes/order");
-const accessListRouter = require("./routes/accesslist");
 const rolesRouter = require("./routes/roles");
 const permissionRouter = require("./routes/permissions");
 const defineAbilitiesFor = require('./accesscontrol/accesscontrol');
@@ -62,7 +61,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/items', itemRouter);
 app.use('/orders', orderRouter);
-app.use('/accesslist', accessListRouter);
 app.use('/roles', rolesRouter);
 app.use('/permissions', permissionRouter);
 
