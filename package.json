@@ -26,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^8.19.0",
+    "husky": "^8.0.1",
     "prisma": "^3.14.0",
     "supertest": "^6.2.3",
     "ts-node": "^10.7.0",
